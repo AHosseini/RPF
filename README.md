@@ -1,4 +1,4 @@
-# Recurrent Poisson Factorization (RPF_
+# Recurrent Poisson Factorization (RPF)
 ![Build Status](https://img.shields.io/teamcity/codebetter/bt428.svg)
 ![License](https://img.shields.io/badge/license-BSD-blue.svg)
 
