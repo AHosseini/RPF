@@ -1,4 +1,4 @@
-datasetName = 'top100Artist_1000';
+datasetName = 'LastFM';
 methodName = 'HRPF';
 %isSocial = 0;
 %isSelfExciting = 1;

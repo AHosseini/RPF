@@ -11,11 +11,6 @@ function [cuv,cuik,cpjk] = linearTimeComputePhi(...
     expected_ln_beta_matrix = psi(gamma.beta_shp)-log(gamma.beta_rte);
     
     for ui = 1:U
-        %{
-        if mod(ui,200)==0
-            fprintf('in linear time algorithm u = %d\n',ui);
-        end
-        %}
         for pi = 1:P
             [cuv,cuik,cpjk] = linearTimeComputePhiUserProduct(...
                 U,K,I,J,ui,pi,inedges,eventsMatrix,...
@@ -46,11 +41,6 @@ function [cuv,cuik,cpjk] = linearTimeComputePhiUserProduct(...
     
     %% C
     C = zeros(n,1);
-    %gamma_psi.theta_shp = psi(gamma.theta_shp);
-    %gamma_psi.beta_shp = psi(gamma.beta_shp);
-    %gamma_log.theta_rte = log(gamma.theta_rte);
-    %gamma_log.beta_rte = log(gamma.beta_rte);
-
     
     for i=1:n
         ti = eventsMatrix{u,p}(i);
@@ -63,10 +53,6 @@ function [cuv,cuik,cpjk] = linearTimeComputePhiUserProduct(...
             jm = valid_features_j(m);
             for k=1:K
                 cnt = cnt+1;
-                %expected_ln_theta = psi(gamma.theta_shp(u,im,k)) - log(gamma.theta_rte(u,im,k));
-                %expected_ln_beta  = psi(gamma.beta_shp(p,jm,k))  - log(gamma.beta_rte(p,jm,k));
-                %expected_ln_theta = gamma_psi.theta_shp(u,im,k) - gamma_log.theta_rte(u,im,k);
-                %expected_ln_beta = gamma_psi.beta_shp(p,jm,k) - gamma_log.beta_rte(p,jm,k);
                 expected_ln_theta = expected_ln_theta_matrix(u,im,k);
                 expected_ln_beta = expected_ln_beta_matrix(p,jm,k);
                 phi_negative_weight(cnt) = exp(expected_ln_theta + expected_ln_beta); 
@@ -103,9 +89,9 @@ function [cuv,cuik,cpjk] = linearTimeComputePhiUserProduct(...
 end
 
 %% computeValidFeatures
-%valid features are features that lambda(t,s) !=0.
-%so  h_i(tn) , l_j(tn) != 0.
-%because it's independet of K. We only save i(s) and j(s).
+% Valid features are features that lambda(t,s) !=0.
+% so  h_i(tn) , l_j(tn) != 0.
+% because it's independet of K. We only save i(s) and j(s).
 function [valid_features_length, valid_features_i, valid_features_j] = ...
     computeValidFeatures(tn)
     [day,hour] = dayAndHour(tn);
@@ -138,11 +124,6 @@ function [all_events_length, all_events_users, all_events_times, all_events_f, a
     ptr = ones(U,1);
     for i = 1:length(eventsMatrix{ui,pi})
         ti = eventsMatrix{ui,pi}(i);
-        %{
-        if (ui == 5)
-            disp(['ti = ' , num2str(ti)]);
-        end
-        %}
         for uj = inedges{ui}
             while (ptr(uj) <= length(eventsMatrix{uj,pi}))
                 tj = eventsMatrix{uj,pi}(ptr(uj));
@@ -155,13 +136,6 @@ function [all_events_length, all_events_users, all_events_times, all_events_f, a
                 all_events_f(all_events_length) = exp_expected_ln_tau(uj)*g(ti-tj,w);
                 all_events_label(all_events_length) = i;
                 ptr(uj) = ptr(uj)+1;
-                %{
-                if (ui == 5 && uj == 8)
-                    f = all_events_f(all_events_length);
-                    disp(['uj =' , num2str(uj) , ' , tj = ' , num2str(tj) , ' f = ' , num2str(f) , ' label = ' , num2str(i)]);
-                    disp(['g(ti-tj,w) = ' ,num2str(g(ti-tj,w))]);                
-                end
-                %}
             end
             
         end

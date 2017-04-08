@@ -1,4 +1,4 @@
-datasetName = 'top100Artist_1000';
+datasetName = 'LastFM';
 methodName = 'DSRPF';
 %isSocial = 1;
 %isSelfExciting = 0;

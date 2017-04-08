@@ -24,18 +24,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%       compute B Values          %%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%    B(u)= \sum_{e\in H_u} G(T-t_e) %%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{
-B = zeros(U,1);
-for u=1:U
-    sum_G = 0.0;
-    for p=1:P
-        for i=1:length(eventsMatrix{u,p})
-            sum_G = sum_G + G(T-eventsMatrix{u,p}(i),w);
-        end
-    end
-    B(u) = sum_G;
-end
-%}
 B = zeros(U,U);
 for u=1:U
     for p=1:P
@@ -81,9 +69,6 @@ while (newLogLikelihood-oldLogLikelihood > 1e-5 && iteration<maxNumberOfIteratio
         disp('no valid phi algorithm specified, phi algorithm should be "linear" or "quadratic"');
         break;
     end
-%     [quadraticCuv, quadraticCuik, quadraticCpjk,sum_entropy_multinomial,sum_sij_gw] = quadraticTimeComputePhi(...
-%         U,P,K,I,J,inedges,eventsMatrix,events,gamma,w,g,g_log);
-    
     tic
     [gamma] = updateTau(U,inedges,prior,cuv,B,gamma);   
     fprintf('2-Tau Parameters Updated.Elapsed Time is %f\n',toc);
@@ -161,63 +146,14 @@ end
 %% 2.2 theta
 function [gamma] = updateTheta(U,K,cuk,prior,gamma, T,t0)
     sum_expected_beta_p = squeeze(sum(gamma.beta_shp./gamma.beta_rte,1)); % 1*K matrix
-%     for i=1:I
-%         for k=1:K
-%             for p=1:P
-%                 for j=1:J
-%                     sum_expected_beta_over_time(i,k)= sum_expected_beta_over_time(i,k)+...
-%                         F(i,j)*gamma.beta_shp(p,j,k)/gamma.beta_rte(p,j,k);
-%                 end
-%             end
-%         end
-%     end
     gamma.theta_shp = prior.shape.theta+cuk;
-%    gamma.theta_rte = T * repmat(sum_expected_beta_p,[U,1])+repmat(gamma.eta_shp./gamma.eta_rte,[1,K]);
-    %(T-t0) * sum_expected_beta_p : (U*1) * (1*K) = U*K
     gamma.theta_rte = (T-t0) * sum_expected_beta_p +repmat(gamma.eta_shp./gamma.eta_rte,[1,K]);
-
-%     for u=1:U       
-%         for i=1:I
-%             for k=1:K
-%                 % cuik : sigma(c(u,i,p,j,k)) 1 <= p <= P , 1 <= j < = J
-%                 gamma.theta_shp(u,i,k) = prior.shape.theta+cuik(u,i,k); 
-%                 gamma.theta_rte(u,i,k) = sum_expected_beta_over_time(i,k)+gamma.eta_shp(u)/gamma.eta_rte(u);
-%             end
-%         end
-%     end
 end
 %% 2.3 beta
 function [gamma] = updateBeta(P,K,cpk,prior,gamma, T,t0)
-    %sum_expected_theta_u = squeeze(sum(gamma.theta_shp./gamma.theta_rte,1)); % 1*K matrix
     sum_expected_theta_u = (T-t0)'*(gamma.theta_shp./gamma.theta_rte); %(1*U) * (U*K) = 1*K
-%     for j=1:J
-%         for k=1:K
-%             for u=1:U
-%                 for i=1:I
-%                     sum_expected_theta_over_time(j,k) = sum_expected_theta_over_time(j,k)+...
-%                         F(i,j)*gamma.theta_shp(u,i,k)/gamma.theta_rte(u,i,k);
-%                 end
-%             end
-%         end
-%     end
     gamma.beta_shp = prior.shape.beta+cpk;
     gamma.beta_rte = repmat(sum_expected_theta_u,[P,1])+repmat(gamma.ksi_shp./gamma.ksi_rte,[1,K]);
-    
-    %gamma.beta_rte = T * repmat(sum_expected_theta_u,[P,1])+repmat(gamma.ksi_shp./gamma.ksi_rte,[1,K]);
-    
-%     for p=1:P
-%         for j=1:J
-%             for k=1:K
-%                 % cpjk : sigma(c(u,i,p,j,k)) 1 <= u <= U , 1 <= i <= I
-%                 gamma.beta_shp(p,j,k) = prior.shape.beta+cpjk(p,j,k);
-%                 gamma.beta_rte(p,j,k) = sum_expected_theta_over_time(j,k)+gamma.ksi_shp(p)/gamma.ksi_rte(p);
-%             end
-%         end
-%     end
-%     diff_shp = sum(sum(sum(((gamma.beta_shp - beta_shp_optimized).^2))));
-%     diff_rte = sum(sum(sum(((gamma.beta_rte - beta_rte_optimized).^2))));
-%     fprintf('diff_shp=%f\n',diff_shp);
-%     fprintf('diff_rte=%f\n',diff_rte);
 end
 %% === 2.1 tau
 function [gamma] = updateTau(U,inedges,prior,cuv,B,gamma)
@@ -227,12 +163,6 @@ function [gamma] = updateTau(U,inedges,prior,cuv,B,gamma)
             gamma.tau_rte(u,v) = B(u,v) + gamma.mu_shp(u)/gamma.mu_rte(u);
         end
     end
-%     for v=1:U        
-%         gamma.tau_shp(inedges{v},v) = prior.shape.tau+cuv(inedges{v},v); %c(u,v)
-%         gamma.tau_rte(inedges{v},v) = B(inedges{v}) + gamma.mu_shp(inedges{v})./gamma.mu_rte(inedges{v});
-%     end
-    %gamma.tau_shp
-    %gamma.tau_rte
 end
 %% 2.5 eta
 function [gamma] = updateEta(U,prior,gamma)

@@ -20,7 +20,6 @@ function [cuv, cuik, cpjk,sum_entropy_multinomial,sum_sij_gw] = ...
     log_gamma.theta_rte=log(gamma.theta_rte);
     log_gamma.beta_rte = log(gamma.beta_rte);
     log_gamma.tau_rte = log(gamma.tau_rte);
-%     valid_events = Cell(U,P);
     
     for n=1:length(events)
         tn = events{n}.time;
@@ -37,10 +36,6 @@ function [cuv, cuik, cpjk,sum_entropy_multinomial,sum_sij_gw] = ...
             K,psi_gamma,log_gamma,valid_events_users,valid_events_times,g_log,w);
         
         [phi_negative , phi_positive] = computePhi(log_phi_negative,log_phi_positive);
-%         [sum_entropy_multinomial_i,sum_sij_gw_i]=updateEntropyAndSG(...
-%             phi_negative,phi_positive,...
-%             w,g_log,tn,valid_events_times);
-%         sum_entropy_multinomial = sum_entropy_multinomial+sum_entropy_multinomial_i
         [sum_entropy_multinomial,sum_sij_gw] = updateEntropyAndSG(...
             sum_entropy_multinomial,sum_sij_gw,...
             phi_negative,phi_positive,...
@@ -84,12 +79,6 @@ function [log_phi_negative , log_phi_positive] = computeLogPhi(...
         expected_ln_beta  = psi_gamma.beta_shp(pn,jm,1:K) - log_gamma.beta_rte(pn,jm,1:K);
         log_phi_negative(cnt+1:cnt+K) = expected_ln_theta + expected_ln_beta; 
         cnt = cnt + K;
-%         for k=1:K
-%             cnt = cnt+1;
-%             expected_ln_theta = psi_gamma.theta_shp(un,im,k) - log_gamma.theta_rte(un,im,k);
-%             expected_ln_beta  = psi_gamma.beta_shp(pn,jm,k) - log_gamma.beta_rte(pn,jm,k);
-%             log_phi_negative(cnt) = expected_ln_theta + expected_ln_beta; 
-%         end
     end
     expected_ln_tau = zeros(1,U);
     expected_ln_tau(inedges{un}) = psi_gamma.tau_shp(inedges{un},un)-log_gamma.tau_rte(inedges{un},un);
@@ -147,25 +136,12 @@ function [cuv,cuik,cpjk] = ...
         cuik(un,im,1:K) = cuik(un,im,1:K)+reshape(phi_negative(cnt+1:cnt+K),[1,1,K]);
         cpjk(pn,jm,1:K) = cpjk(pn,jm,1:K)+reshape(phi_negative(cnt+1:cnt+K),[1,1,K]);        
         cnt = cnt+K;
-%         for k=1:K
-%             cnt = cnt+1;
-%             cuik(un,im,k) = cuik(un,im,k)+phi_negative(cnt);
-%             cpjk(pn,jm,k) = cpjk(pn,jm,k)+phi_negative(cnt);            
-% %          sum_entropy_multinomial = sum_entropy_multinomial+get_entropy(phi_negative(cnt));
-%         end
     end
     if (valid_events_length > 0)
-        %{
-        cuv(valid_events_users(1:valid_events_length),un) = ...
-            cuv(valid_events_users(1:valid_events_length),un)+...
-            phi_positive(1:valid_events_length);
-        %}  
         for m=1:valid_events_length
            um = valid_events_users(m);
            cuv(um,un) = cuv(um,un)+phi_positive(m);
-%            sum_entropy_multinomial = sum_entropy_multinomial+get_entropy(phi_positive(m));
         end
-        %multiply of g_log and phi_positive = [1 * n] * [n * 1] = [1 * 1]
     end    
 end
 
@@ -181,11 +157,3 @@ function [sum_entropy_multinomial,sum_sij_gw] = updateEntropyAndSG(...
             sum_sij_gw = sum_sij_gw+g_log(tn-valid_events_times,w)*phi_positive;
         end
 end
-% function [entropy] = get_entropy(p)
-%     if (p < 1e-40)
-%         entropy = 0;
-%     else
-%         entropy = -p*log(p);
-%     end
-%     
-% end

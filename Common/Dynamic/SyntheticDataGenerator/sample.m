@@ -4,9 +4,7 @@ function [u,p] = sample(Is)
 end
 
 function d = sample1d(Is)
-    %disp(Is);
     u = rand()*sum(Is);
-    %disp(['sum(Is) = ',num2str(sum(Is)),' u = ',num2str(u)]);
     sumI = 0;
     for d=1:length(Is)
         sumI = sumI+Is(d);

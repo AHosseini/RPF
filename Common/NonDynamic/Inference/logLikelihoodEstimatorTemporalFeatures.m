@@ -18,7 +18,6 @@ end
 lle = 0.0;
 
 %% log(lambda(t))
-% errorNewSocial = zeros(U,P);
 for u=1:U
     for p=1:P
         ptr = ones(U,1);

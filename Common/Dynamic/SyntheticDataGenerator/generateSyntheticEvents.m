@@ -1,10 +1,5 @@
 function [trainEvents,trainEventsMatrix,inedges,outedges,model] = ...
     generateSyntheticEvents(U,P,K,maxEvents,trainEventsSize)
-%{
-U = 10;
-P = 5;
-K = 3;
-    %}
 I = 31;
 
 model = ModelGeneratorTemporalFeatures(U,P,K,I,0.005);

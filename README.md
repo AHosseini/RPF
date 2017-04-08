@@ -21,6 +21,20 @@ RPF is a temporal recommender system which is able to recommend the right item t
 
 - A fast variational algorithm for inference on the proposed time-dependent model.
 
+## Data
+
+The input format for the events is as follows:
+```
+unixTime userId    itemId
+```
+The events should be sorted in an increasing order of time. The userId and itemIds are sequential Integer numbers starting from 1. The name of this file should be datasetName.tsv .
+
+Social Methods such as SRPF and DSRPF takes an extra input file which contains the adjacency list among the users. The name of this file should be datasetName\_adjList.txt. Each line of this file starts with id of a user and then the number of users that she follows and then the list of users that she follows:
+
+```
+userId1   N user_1 user_2 ... user_N
+```
+The LastFM dataset which is used in the RPF paper is in the Dataset folder as a sample.
 ## Running The Code
 
 In order to run each of the HRPF, DRPF, SRPF and DSRPF

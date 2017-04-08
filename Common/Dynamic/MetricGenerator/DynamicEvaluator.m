@@ -42,29 +42,6 @@ for i = 1:NTest
     firstOccurenceInTest(ui) = min(firstOccurenceInTest(ui),ti);
 end
 RealReturningTime = firstOccurenceInTest-lastOccurenceInTrain;
-%{
-isInTrain = zeros(U,P);
-lastOccurenceInTrain = zeros(U,P);
-for i = 1:NTrain
-    event = trainEvents{i};
-    ti = event.time;
-    ui = event.user;
-    pi = event.product;
-    isInTrain(ui,pi) = isInTrain(ui,pi)+1;
-    lastOccurenceInTrain(ui,pi) = max(lastOccurenceInTrain(ui,pi),ti);
-end
-isInTest = zeros(U,P);
-firstOccurenceInTest = inf(U,P);
-for i = 1:NTest
-    event = testEvents{i};
-    ti = event.time;
-    ui = event.user;
-    pi = event.product;
-    isInTest(ui,pi) = isInTest(ui,pi)+1;
-    firstOccurenceInTest(ui,pi) = min(firstOccurenceInTest(ui,pi),ti);
-end
-RealReturningTime = firstOccurenceInTest-lastOccurenceInTrain;
-%}
 NumGeneratingPoints = 100;
 diff = [];
 
@@ -88,34 +65,6 @@ for u=1:U
         fprintf('u = %d , average diff = %f\n',u,sqrt(sum(mean(diff.^2))) );
     end
 end
-%{
-for u=1:U
-    for p=1:P
-        if (isInTest(u,p) && isInTrain(u,p))
-            t0 = lastOccurenceInTrain(u,p);
-            %t0 = trainEvents{end}.time;
-            socialIntensityInitial = computeSocialIntensityUserProduct(u,p,t0,...
-                inedges,eventsMatrix,tau,g);%+tau(u,u)*g(0);
-            suprimumBaseIntensity = computeSuprimumBaseIntensity(u,p,theta,beta);
-            
-            generatedPoints = zeros(NumGeneratingPoints,1);
-            for i=1:NumGeneratingPoints
-                generatedPoints(i) = generatePoint(u,p,t0,suprimumBaseIntensity,...
-                    socialIntensityInitial,theta,beta,tau,g);
-            end
-            EstimatedReturningTime(u,p) = median(generatedPoints)-t0;
-            
-%             if (p == 1)
-% %                 disp(['u= ' , num2str(u) , ', p= ', num2str(p)]);
-% %                 format shortG;
-%                 disp(EstimatedReturningTime(u,p));
-%                 disp(RealReturningTime(u,p));
-%             end
-            diff(end+1) = (EstimatedReturningTime(u,p)-RealReturningTime(u,p));
-        end
-    end
-end
-%}
 %%
 %%%%%%%%%%%%%%%%%%%%% Computing SocialIntensity after training%%%%%%%%%%%%%
 isNotInTrain = ones(U,P);

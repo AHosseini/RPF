@@ -1,4 +1,4 @@
-datasetName = 'top100Artist_1000';
+datasetName = 'LastFM';
 methodName = 'SRPF';
 K = 20;
 w = 1.0;

@@ -98,15 +98,10 @@ function [all_events_length, all_events_users, all_events_times, all_events_f, a
     ptr = ones(U,1);    
     for i = 1:length(eventsMatrix{ui,pi})
         ti = eventsMatrix{ui,pi}(i);
-        %{
-        if (ui == 5)
-            disp(['ti = ' , num2str(ti)]);
-        end
-        %}
         for uj = inedges{ui}
             while (ptr(uj) <= length(eventsMatrix{uj,pi}))
                 tj = eventsMatrix{uj,pi}(ptr(uj));
-                if (tj >= ti) %only events before ti can 
+                if (tj >= ti) %only events before ti can influence on event i
                     break;
                 end
                 all_events_length = all_events_length+1;
@@ -115,20 +110,11 @@ function [all_events_length, all_events_users, all_events_times, all_events_f, a
                 all_events_f(all_events_length) = exp_expected_ln_tau(uj)*g(ti-tj,w);
                 all_events_label(all_events_length) = i;
                 ptr(uj) = ptr(uj)+1;
-                %{
-                if (ui == 5 && uj == 8)
-                    f = all_events_f(all_events_length);
-                    disp(['uj =' , num2str(uj) , ' , tj = ' , num2str(tj) , ' f = ' , num2str(f) , ' label = ' , num2str(i)]);
-                    disp(['g(ti-tj,w) = ' ,num2str(g(ti-tj,w))]);                
-                end
-                %}
             end
             
         end
     end
     
-    %there may be events after ui,pi , so all_events_length may be smaller
-    %than num_events
     all_events_users = all_events_users(1:all_events_length);
     all_events_times = all_events_times(1:all_events_length);
     all_events_f = all_events_f(1:all_events_length);

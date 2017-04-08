@@ -51,41 +51,15 @@ for u=1:U
             end
             %% sum of social intensity and base intensity
             lle = lle+log(currentTheta'*currentBeta+currentSocialIntensity);
-
-%             errorNewSocial(u,p) = abs(currentSocialIntensity-...
-%                             socialIntensity(tauSparse,eventsMatrix,ti,w,g,u,p) )^2;
         end
     end
 end
 
 %% sigma(theta(u,i)*beta(p,i)*F(i,j,T))
-%{
-sumTheta = zeros(1,I,K);
-for u=1:U
-    sumTheta = sumTheta+thetaMatrix(u,:,:);
-end
-%}
 sumBeta = zeros(1,J,K);
 for p=1:P
     sumBeta = sumBeta+betaMatrix(p,:,:);
 end
-
-%{
-for u=1:U
-    for i=1:I
-        for j=1:J
-            currentTheta = thetaMatrix(u,i,:);
-            currentTheta = currentTheta(:);
-            
-            %we use sum of beta instead of looping through products to speed up.
-            currentBeta =  sumBeta(1,j,:); 
-            currentBeta = currentBeta(:);
-
-            lle = lle-currentTheta'*currentBeta*(FijT(i,j)-Fuij(u,i,j)); %before formula (5) : sigma(Theta(u,i)*Beta(p,j)*F(i,j,T))
-        end
-    end
-end
-%}
 for i=1:I
     for j=1:J
         x = squeeze(thetaMatrix(:,i,:))*squeeze(sumBeta(1,j,:)); %x is U*1
