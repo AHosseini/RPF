@@ -2,7 +2,7 @@
 ![Build Status](https://img.shields.io/teamcity/codebetter/bt428.svg)
 ![License](https://img.shields.io/badge/license-BSD-blue.svg)
 
-RPF is a temporal recommender system which is able to recommend the right item to the right user at the right time by utilizing the recurring temporal patterns in user-item engagement. The repository contains the implementation of different variants of RPF, i.e. Hierarchical RPF, Social RPF, Dynamic RPF, Dynamic Social RPF.
+RPF is a temporal recommender system which is able to recommend the right item to the right user at the right time by utilizing the recurring temporal patterns in user-item engagement. The repository contains the implementation of different variants of RPF, i.e. Hierarchical RPF, Social RPF, Dynamic RPF, Dynamic Social RPF, Item-Item RPF, eXtended Item-Item RPF.
 
 
 ## Prerequisites
@@ -19,7 +19,11 @@ RPF is a temporal recommender system which is able to recommend the right item t
 
 - Hierarchical RPF is able to consider the diversity of users interests and items popularity using a hierarchical structure.
 
-- A fast variational algorithm for inference on the proposed time-dependent model.
+- Item-Item RPF is a variant of RPF which is able to consider the effect of interaction of a user with an item on its future engagements with other items.
+
+- eXtended Item-Item RPF is an extension of IIRPF which uses metadata of items such as category, location or tags to infer the inter-item relations more efficiently.
+
+- A fast variational algorithm for inference on the proposed time-dependent models.
 
 ## Data
 
@@ -52,4 +56,4 @@ The results will be saved under the "Results" folder.
 
 In case of using the code, please cite the following paper:
 
-Hosseini, Seyed Abbas, et al. "Recurrent Poisson Factorization for Temporal Recommendation." arXiv preprint arXiv:1703.01442 (2017).
+Hosseini, Seyed Abbas, et al. "Recurrent poisson factorization for temporal recommendation." Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 2017.

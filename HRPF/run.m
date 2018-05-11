@@ -95,11 +95,6 @@ NonDynamicEvaluator(trainEvents,testEvents, outedges,inedges,eventsMatrix,...
 save(sprintf('../Results/Metrics_%s_%s_K_%d_w_%.1f_iter_%d',methodName, datasetName,params.K,w,params.maxNumberOfIterations),...
     'ranks', 'ndcgOverTime', 'ndcgAtK', 'recallAtKOverTime', 'recallAtK',...
     'EstimatedReturningTime', 'RealReturningTime','diff');
-
-    
-%% plotting
-
-
 %% remove path
 rmpath('../Common/ReadData/');
 rmpath(genpath('../Common/NonDynamic/'));
